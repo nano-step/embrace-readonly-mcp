@@ -6,6 +6,7 @@ authors = [{ name = "kokorolx" }]
 requires-python = ">=3.10"
 dependencies = [
   "mcp>=1.0,<2",
+  "playwright>=1.50,<2",
 ]
 
 [tool.uv]

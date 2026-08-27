@@ -74,13 +74,30 @@ zsh -lic 'uv run --project /Users/tamlh/workspaces/self/AI/Tools/embrace-readonl
 4. For a crash, always request `get_crash_stack_samples`.
 5. For a slow request, use endpoint errors, latency, then timeseries/distribution.
 
-## Dashboard and session limitation
+## Dashboard User Timeline support
 
-This skill can inspect official Embrace analytics, crash stacks, root-span traces,
-and network diagnostics. It cannot open the Dashboard User Timeline or retrieve
-arbitrary session events by email/session ID because the official MCP does not
-publish that capability. A supplied Dashboard URL is useful context, but it is
-not fetched through cookies or undocumented Dashboard APIs.
+The official MCP does not publish User Timeline tools, so use the local custom
+read-only Dashboard tools when a Dashboard URL, `user_email`, or session IDs are
+provided:
+
+- `embrace_dashboard_list_user_sessions`: filter and paginate sessions by app and email.
+- `embrace_dashboard_get_session_sequence`: retrieve the sequence between `first` and `last` session IDs.
+- `embrace_dashboard_get_session_detail`: retrieve complete events for one session ID.
+
+The Dashboard adapter runs headless Playwright with an authenticated local
+browser profile. It allows only the three explicit session routes and only GET
+or semantically read-only POST requests. It never returns cookies, auth headers,
+or secrets. If browser authentication is unavailable, report that clearly
+instead of falling back to undocumented arbitrary requests.
+
+For a Dashboard URL:
+
+1. Parse `app_id`, `user_email`, `first`, and `last`.
+2. Call `embrace_dashboard_list_user_sessions` to validate the exact sessions.
+3. Call `embrace_dashboard_get_session_sequence` when both boundary IDs exist.
+4. Call `embrace_dashboard_get_session_detail` for each relevant session.
+5. Preserve event IDs, timestamps, logs, spans, network requests, breadcrumbs,
+   taps, and metadata in the investigation report.
 
 For investigations:
 
@@ -92,6 +109,5 @@ For investigations:
    stack-sample tool using the returned IDs.
 4. Preserve exact timestamps, versions, counts, and IDs in the report.
 
-The official Embrace MCP does not currently expose arbitrary User Timeline
-retrieval. Do not invent or call undocumented Dashboard endpoints. Do not ask
-for or return `EMBRACE_API_TOKEN`, cookies, authorization headers, or secrets.
+Do not expose arbitrary Dashboard endpoints or write methods. Do not ask for
+or return `EMBRACE_API_TOKEN`, cookies, authorization headers, or secrets.

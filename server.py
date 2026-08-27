@@ -11,6 +11,13 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
+from dashboard_client import (
+    DashboardAuthError,
+    list_user_sessions,
+    session_detail,
+    session_sequence,
+)
+
 REMOTE_URL = "https://mcp.embrace.io/mcp"
 REQUEST_TIMEOUT_SECONDS = 60
 
@@ -126,6 +133,50 @@ async def embrace_list_readonly_tools() -> str:
         ensure_ascii=False,
         indent=2,
     )
+
+
+@mcp.tool()
+async def embrace_dashboard_list_user_sessions(
+    app_id: str,
+    user_email: str,
+    resolution: str = "day",
+    max_pages: int = 20,
+) -> str:
+    """List User Timeline session groups using the authenticated Dashboard UI session."""
+    try:
+        result = await list_user_sessions(app_id, user_email, resolution, max_pages)
+    except DashboardAuthError as error:
+        raise RuntimeError(str(error)) from error
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+@mcp.tool()
+async def embrace_dashboard_get_session_detail(
+    app_id: str,
+    session_id: str,
+    user_email: str | None = None,
+) -> str:
+    """Return the complete read-only User Timeline for one session ID."""
+    try:
+        result = await session_detail(app_id, session_id, user_email)
+    except DashboardAuthError as error:
+        raise RuntimeError(str(error)) from error
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+@mcp.tool()
+async def embrace_dashboard_get_session_sequence(
+    app_id: str,
+    first_id: str,
+    last_id: str,
+    user_email: str | None = None,
+) -> str:
+    """Return the read-only session sequence between two Dashboard session IDs."""
+    try:
+        result = await session_sequence(app_id, first_id, last_id, user_email)
+    except DashboardAuthError as error:
+        raise RuntimeError(str(error)) from error
+    return json.dumps(result, ensure_ascii=False, indent=2)
 
 
 @mcp.tool()
