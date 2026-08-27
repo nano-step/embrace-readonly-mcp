@@ -28,6 +28,14 @@ Do not pass the token as a tool argument or commit it to a file.
 The server has an explicit allowlist of the 22 published Embrace tools and
 rejects anything else.
 
+## Skill
+
+The workflow skill is at
+[`skills/embrace-readonly-full-data/SKILL.md`](skills/embrace-readonly-full-data/SKILL.md).
+Install or copy that directory into the skill directory used by your agent.
+The skill instructs agents to discover schemas, preserve structured responses,
+chain detail tools, and avoid undocumented Dashboard endpoints.
+
 ## MCP client configuration
 
 For a client that supports stdio MCP servers:
