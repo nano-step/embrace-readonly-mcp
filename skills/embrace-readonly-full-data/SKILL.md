@@ -25,7 +25,12 @@ app version, message filter, and limit when possible; expand only when needed.
 
 ## Complete official tool map
 
-Use `embrace_call_readonly` with these remote tool names:
+Use `embrace_call_readonly` with these remote tool names. For repeatable local smoke tests or when a host has not inherited the environment, use the prebuilt `scripts/embrace_mcp_call.py`; do not generate a new client script. The CLI accepts a tool name and a JSON object via `--arguments` and preserves the proxy's full JSON output.
+
+```bash
+zsh -lic 'uv run --project /Users/tamlh/workspaces/self/AI/Tools/embrace-readonly-mcp python /Users/tamlh/workspaces/self/AI/Tools/embrace-readonly-mcp/scripts/embrace_mcp_call.py embrace_list_readonly_tools'
+```
+
 
 ### App and sessions
 
